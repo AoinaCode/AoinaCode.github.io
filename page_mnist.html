@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<!--page_mnist.html-->
+<html>
+    <meta charset="utf-8">
+    <heade>
+        <title>
+            手寫辨識
+        </title>
+        <script src="./static/js/jquery-3.3.1.slim.min.js"></script>
+        <script src="./static/js/bootstrap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.11.1"></script>
+        
+        <script src="./static/js/page_mnist_main.js"></script>
+        <link rel="stylesheet" href="./static/css/bootstrap.min.css">
+        <link rel="stylesheet" href="./static/css/Custom_css_1.css">
+    </heade>
+    <body onload="SetConvas()"  id="BackGroundSet">
+        <div class="container-fluid">
+            <div class="row justify-content-md-left">
+                <div class="col">
+                    <nav class="navbar navbar-expand-lg navbar-light" id="titlebarbg">
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
+                            <ul class="navbar-nav nav justify-content-center">
+                                <li class="nav-item">
+                                    <a class="nav-link" id="titlebaritem" href="/">首頁</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="titlebaritem" href="./page_mnist.html">MNIST_手寫辨識</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="titlebaritem" href="/about">關於我</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+            <div class="row justify-content-md-center" id="MNIST_SetStyle">
+                <div class="col">
+                    <div class="row justify-content-md-center">
+                        <h1>MNIST_手寫辨識模型設定</h1>
+                    </div>
+                    <hr>
+                    
+                    <div class="row justify-content-md-center">
+                        <div class="col">
+                            <div class="row justify-content-md-center">
+                                <h5 class="text-cente">目前模型設定值</h5>
+                            </div>
+                            <div class="row justify-content-md-center">
+                                    <table class="table table-hover w-75">
+                                        <thead>
+                                            <tr>                  
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Value</th>
+                                                <th scope="col">Options</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Model</td>
+                                                <td name="NowModel">None</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-outline-primary" onclick="ModelOptions('UploadModel')">UploadModel</button>
+                                                    <button type="button" class="btn btn-outline-primary" onclick="ModelOptions('TrainModel')">TrainModel</button>
+                                                    <button type="button" class="btn btn-outline-primary" onclick="DeletModel()">DeletModel</button>
+                                                </td>
+                                            <tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                            <div class="collapse" id="TrainModelSet">
+                                <hr>
+                                <div class="row justify-content-md-center">
+                                    <h5 class="text-cente">訓練模型設定</h5>
+                                </div>
+                                
+                                <div class="row justify-content-md-center">
+                                    
+                                    <table class="table table-hover w-75">
+                                        <thead>
+                                            <tr>                  
+                                                <th scope="col">Options</th>
+                                                <th scope="col">Value</th>
+                                                <th scope="col">Change</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>TrainBach</td>
+                                                <td name="TrainBachRangelb">300</td>
+                                                <td>
+                                                    <label for="TrainBach">Range:100~1000 (default:300)</label>
+                                                    <input type="range" class="custom-range" id="TrainBach" min="100" max="1000" step="100" value="300" 
+                                                    onchange="ChangeScrllBarLabel('TrainBachRange','TrainBachRangelb')" name="TrainBachRange">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>TrainBachSize</td>
+                                                <td name="TrainBachSizelb">50</td>
+                                                <td>
+                                                    <label for="TrainBachSize">Range:10~100 (default:50) (55K/n)</label>
+                                                    <input type="range" class="custom-range" id="TrainBachSize" min="10" max="100" step="10" value="50" 
+                                                    onchange="ChangeScrllBarLabel('TrainBachSizeRange','TrainBachSizelb')" name="TrainBachSizeRange">
+                                                </td>
+                                            </tr>
+                                            
+                                            
+                                    </tbody>
+                                    </table>         
+                                </div>
+                                <div class="row justify-content-md-center">
+                                    <div class="col">
+                                        <div class="row justify-content-md-center">
+                                            <div class="input-group mb-3 w-75">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" id="ModelName">ModelName</span>
+                                                </div>
+                                                <input type="text" class="form-control" id="ModelName" aria-describedby="ModelName" value="MNIST_TrainData" name="ModelName">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="row justify-content-md-center">
+                                            <button type="button" class="btn btn-outline-primary w-50"  onclick="TrainModel()" name="Training">Training</button>
+                                            
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                <hr>
+                                <div class="row justify-content-md-center">
+                                    <h5 class="text-cente">模型準確度</h5>
+                                </div>
+                                <div class="row justify-content-md-center">
+                                    <table class="table table-hover w-75">
+                                        <thead>
+                                            <tr>                  
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Value</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            
+                                            <tr>
+                                                <td>Batch</td>
+                                                <td name="TraingBach">--</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Val_acc(準確率)</td>
+                                                <td name="Val_acc">--</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Val_loss(損失率)</td>
+                                                <td name="Val_loss">--</td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="collapse" name="DownloadModel" id="DownloadModel">
+                                    <div class="row justify-content-md-center">
+                                        <button type="button" class="btn btn-outline-primary w-50"  onclick="Download()" name="DownloadModel" style="margin: 10px">Download Model</button>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="collapse" id="UploadModelSet">
+                                <hr>
+                                <div class="row justify-content-md-center">
+                                    <h5 class="text-cente ">模型上傳</h5>
+                                </div>
+                                
+                                <div class="row justify-content-md-center">
+                                    <div class="col">
+                                        <h5>Model</h5>
+                                        <input type="file" class="form-control-file" id="json-upload">
+                                    </div>
+                                    <div class="col">
+                                        <h5>Weight</h5>
+                                        <input type="file" class="form-control-file" id="weights-upload">
+                                    </div>
+                                </div>
+                                <div class="row justify-content-md-center" style="margin: 10px">
+                                    <button class="btn btn-outline-primary w-75" type="button" onclick="UploadFile()">Upload</button>
+                                </div>
+                                
+                            </div>
+                            
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-md-center" >
+                <button type="button" class="btn btn-outline-primary w-50"  onclick="ShowCanvas()" name="MNISTCanvasBtn" style="margin: 10px">測試模型辨識</button>
+            </div>
+            <div class="collapse" name="MNISTCanvasObj">
+                <div class="row justify-content-md-center" >
+                    <div class="col-9">
+                        <div class="row justify-content-md-center">
+                            <h3>畫布</h3>
+                        </div>
+                        <div class="row justify-content-md-center">
+                            <canvas id="TestMnistDrawCanvas" width="280" height="280" style="background-color:white;border:1px solid #c3c3c3;" ></canvas>
+                        </div>
+                        <div class="row justify-content-md-center">
+                            <div class="col align-self-center">
+                                <button type="button" class="btn btn-outline-primary w-50"  onclick="GetCanvasNum()" style="margin: 10px">辨識數字</button>
+                            </div>
+                            <div class="col align-self-center">
+                                <h3 name="ShowCanvasNum">數字:--</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <h3>畫布設定</h3>
+                    </div>
+                </div>
+            </div>
+            
+            
+            
+        </div>
+    </body>
+
+</html>
