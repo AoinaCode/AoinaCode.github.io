@@ -1,5 +1,3 @@
-
-
 let DrawPint = TwoDinZeroArr();
 let model = null;
 let ModelName="None";
@@ -11,60 +9,57 @@ let CanvasDrawColor = null;
 let CanvasDrawSize = null;
 
 function SetConvas(){
-		const canvas= document.getElementById('TestMnistDrawCanvas');
-		if (canvas.getContext){
-				canvas.addEventListener('mousedown',function(e){
-					IsDrawing=true
-				} )
-				canvas.addEventListener('mouseup',function(e){
-					IsDrawing=false
-				})
-				canvas.addEventListener('mousemove',drawing);
-				CanvasDrawColor = document.getElementsByName("CanvasPaintColor")[0].value
-				CanvasDrawSize = parseInt(document.getElementsByName("CanvasPaintSizeRange")[0].value)
-		}
-		function drawing(even){
-			if(IsDrawing==true){
-				const rect = canvas.getBoundingClientRect();
-				const x = even.clientX - parseInt(rect.left);
-				const y = even.clientY - parseInt(rect.top);
-				var ctx = canvas.getContext('2d');
-				ctx.fillStyle=CanvasDrawColor;
-				ctx.beginPath();
-				ctx.arc(x,y,CanvasDrawSize,0,Math.PI*2,true)
-				ctx.closePath();
-				ctx.fill();
-				const drawx = parseInt(x/10);
-				const drawy = parseInt(y/10);
-				//console.log("x:",drawx,",y:",drawy);
-				if(VistualGrayscale===true){
-					if(drawx<27 && drawy<27){
-						DrawPint[drawy+1][drawx] = 0.5;
-						DrawPint[drawy+1][drawx-1] = 0.5;
-						DrawPint[drawy+1][drawx+1] = 0.5;
-						DrawPint[drawy][drawx] =1;
-						DrawPint[drawy][drawx-1] = 0.5;
-						DrawPint[drawy][drawx+1] = 0.5;
-						DrawPint[drawy-1][drawx] = 0.5;
-						DrawPint[drawy-1][drawx-1] = 0.5;
-						DrawPint[drawy-1][drawx+1] = 0.5;
-					}else{
-						IsDrawing=false;
-						console.log("超出邊界");
-					}
-				}else if(VistualGrayscale===false){
-					if(drawx<28 && drawy<28){
-						DrawPint[drawy][drawx] =1;
-					}else{
-						IsDrawing=false;
-						console.log("超出邊界");
-					}
+	const canvas= document.getElementById('TestMnistDrawCanvas');
+	if (canvas.getContext){
+		canvas.addEventListener('mousedown',function(e){
+			IsDrawing=true
+		} )
+		canvas.addEventListener('mouseup',function(e){
+			IsDrawing=false
+		})
+		canvas.addEventListener('mousemove',drawing);
+		CanvasDrawColor = document.getElementsByName("CanvasPaintColor")[0].value
+		CanvasDrawSize = parseInt(document.getElementsByName("CanvasPaintSizeRange")[0].value)
+	}
+	function drawing(even){
+		if(IsDrawing==true){
+			const rect = canvas.getBoundingClientRect();
+			const x = even.clientX - parseInt(rect.left);
+			const y = even.clientY - parseInt(rect.top);
+			var ctx = canvas.getContext('2d');
+			ctx.fillStyle=CanvasDrawColor;
+			ctx.beginPath();
+			ctx.arc(x,y,CanvasDrawSize,0,Math.PI*2,true)
+			ctx.closePath();
+			ctx.fill();
+			const drawx = parseInt(x/10);
+			const drawy = parseInt(y/10);
+			//console.log("x:",drawx,",y:",drawy);
+			if(VistualGrayscale===true){
+				if(drawx<27 && drawy<27){
+					DrawPint[drawy+1][drawx] = 0.5;
+					DrawPint[drawy+1][drawx-1] = 0.5;
+					DrawPint[drawy+1][drawx+1] = 0.5;
+					DrawPint[drawy][drawx] =1;
+					DrawPint[drawy][drawx-1] = 0.5;
+					DrawPint[drawy][drawx+1] = 0.5;
+					DrawPint[drawy-1][drawx] = 0.5;
+					DrawPint[drawy-1][drawx-1] = 0.5;
+					DrawPint[drawy-1][drawx+1] = 0.5;
+				}else{
+					IsDrawing=false;
+					console.log("超出邊界");
 				}
-				
-				
+			}else if(VistualGrayscale===false){
+				if(drawx<28 && drawy<28){
+					DrawPint[drawy][drawx] =1;
+				}else{
+					IsDrawing=false;
+					console.log("超出邊界");
+				}
 			}
 		}
-	
+	}
 }
 
 function ShowCanvas(){
@@ -120,7 +115,6 @@ function GetCanvasNum(){
 		//console.log(num)
 		context.clearRect(0, 0, canvas.width, canvas.height)
 		DrawPint=TwoDinZeroArr()
-		
 	}else{
 		context.clearRect(0, 0, canvas.width, canvas.height)
 		DrawPint=TwoDinZeroArr()
@@ -143,13 +137,11 @@ function  TwoDinZeroArr(){
 }
 
 async function UploadFile(){
-	
 	const UploadData_Model = document.getElementById('json-upload');
 	const UploadData_Weight = document.getElementById('weights-upload');
 	model = await tf.loadModel(tf.io.browserFiles([UploadData_Model.files[0], UploadData_Weight.files[0]]));
 	ModelName=UploadData_Model.files[0].name;
 	ModelLabel[0].innerHTML=ModelName;
-	
 }
 
 function Download(){
@@ -174,7 +166,6 @@ function ModelOptions(action){
 			TrainModel.className="collapse show";
 		}
 		UploadModel.className="collapse";
-		
 	}
 }
 
@@ -226,7 +217,6 @@ function TrainModel(){
 		}else{
 			$('#TrainingOldModel').modal();
 		}
-		
 	}
 }
 
@@ -282,8 +272,5 @@ async function StartTrainModel(){
 	IsTraing=false;
 	ModelLabel[0].innerHTML=ModelName;
 	DownloadModelBtn.className="collapse show";
-	
-	
-	
 }
 
