@@ -1,3 +1,5 @@
+
+
 let DrawPint = TwoDinZeroArr();
 let model = null;
 let ModelName="None";
@@ -10,28 +12,31 @@ let CanvasDrawSize = null;
 
 function SetConvas(){
 	const canvas= document.getElementById('TestMnistDrawCanvas');
+	const ctx = canvas.getContext('2d');
 	if (canvas.getContext){
-		canvas.addEventListener('mousedown',function(e){
-			IsDrawing=true
-		} )
-		canvas.addEventListener('mouseup',function(e){
-			IsDrawing=false
-		})
-		canvas.addEventListener('mousemove',drawing);
-		CanvasDrawColor = document.getElementsByName("CanvasPaintColor")[0].value
-		CanvasDrawSize = parseInt(document.getElementsByName("CanvasPaintSizeRange")[0].value)
+			canvas.addEventListener('mousedown',function(even){
+				ctx.beginPath();
+				IsDrawing=true;
+			} )
+			canvas.addEventListener('mouseup',function(e){
+				IsDrawing=false;
+				ctx.closePath();
+			})
+			canvas.addEventListener('mousemove',drawing);
+			CanvasDrawColor = document.getElementsByName("CanvasPaintColor")[0].value
+			CanvasDrawSize = parseInt(document.getElementsByName("CanvasPaintSizeRange")[0].value)
 	}
 	function drawing(even){
 		if(IsDrawing==true){
 			const rect = canvas.getBoundingClientRect();
 			const x = even.clientX - parseInt(rect.left);
 			const y = even.clientY - parseInt(rect.top);
-			var ctx = canvas.getContext('2d');
-			ctx.fillStyle=CanvasDrawColor;
-			ctx.beginPath();
-			ctx.arc(x,y,CanvasDrawSize,0,Math.PI*2,true)
-			ctx.closePath();
-			ctx.fill();
+			//ctx.arc(x,y,CanvasDrawSize,0,Math.PI*2,true)
+			ctx.lineTo(x,y);
+			ctx.strokeStyle=CanvasDrawColor;
+			ctx.lineWidth=CanvasDrawSize;
+			ctx.lineCap="round";
+			ctx.stroke();
 			const drawx = parseInt(x/10);
 			const drawy = parseInt(y/10);
 			//console.log("x:",drawx,",y:",drawy);
@@ -80,44 +85,42 @@ function ShowCanvas(){
 
 function ChangeCanvasSet(action){
 	if(action==="color"){
-		CanvasDrawColor = document.getElementsByName("CanvasPaintColor")[0].value
+		CanvasDrawColor = document.getElementsByName("CanvasPaintColor")[0].value;
 	}else if (action==="size"){
-		CanvasDrawSize = parseInt(document.getElementsByName("CanvasPaintSizeRange")[0].value)
-		const Label = document.getElementsByName("CanvasPaintSizeLabel")[0]
-		Label.innerText = "Value:"+CanvasDrawSize
+		CanvasDrawSize = parseInt(document.getElementsByName("CanvasPaintSizeRange")[0].value);
+		const Label = document.getElementsByName("CanvasPaintSizeLabel")[0];
+		Label.innerText = "Value:"+CanvasDrawSize;
 	}else if (action=="VistualGrayscale"){
-		const Obj = document.getElementsByName("VistualGrayscale")[0]
-		const Label = document.getElementsByName("VistualGrayscaleLabel")[0]
+		const Obj = document.getElementsByName("VistualGrayscale")[0];
+		const Label = document.getElementsByName("VistualGrayscaleLabel")[0];
 		if(Obj.checked ===true){
-			Obj.checked=true
-			VistualGrayscale=true
-			Label.innerText="開啟"
-			
+			Obj.checked=true;
+			VistualGrayscale=true;
+			Label.innerText="開啟";
 		}else{
-			Obj.checked=false
-			VistualGrayscale=false
-			Label.innerText="關閉"
-			
+			Obj.checked=false;
+			VistualGrayscale=false;
+			Label.innerText="關閉";
 		}
 	}
 }
 
 function GetCanvasNum(){
-	const canvas= document.getElementById('TestMnistDrawCanvas')
-	const context = canvas.getContext('2d')
-	const ValNum = document.getElementsByName('ShowCanvasNum')[0]
+	const canvas= document.getElementById('TestMnistDrawCanvas');
+	const context = canvas.getContext('2d');
+	const ValNum = document.getElementsByName('ShowCanvasNum')[0];
 	if(model!=null){
-		const CanvasPoint = tf.tensor2d(DrawPint).reshape([1,28,28,1])
+		const CanvasPoint = tf.tensor2d(DrawPint).reshape([1,28,28,1]);
 		//console.log(DrawPint)
-		const prediction = model.predict(CanvasPoint)
-		const num =  prediction.argMax(1).dataSync()[0]
-		ValNum.innerHTML="數字:"+num
+		const prediction = model.predict(CanvasPoint);
+		const num =  prediction.argMax(1).dataSync()[0];
+		ValNum.innerHTML="數字:"+num;
 		//console.log(num)
-		context.clearRect(0, 0, canvas.width, canvas.height)
-		DrawPint=TwoDinZeroArr()
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		DrawPint=TwoDinZeroArr();
 	}else{
-		context.clearRect(0, 0, canvas.width, canvas.height)
-		DrawPint=TwoDinZeroArr()
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		DrawPint=TwoDinZeroArr();
 	}
 }
 
@@ -125,7 +128,7 @@ function  TwoDinZeroArr(){
 	const array = [];
 	for(let i=0;i<28;i++){
 		const n = new Array(28).fill(0);
-		array.push(n)
+		array.push(n);
 	}
 	/*
 	const array = [];
@@ -166,13 +169,14 @@ function ModelOptions(action){
 			TrainModel.className="collapse show";
 		}
 		UploadModel.className="collapse";
+		
 	}
 }
 
 function ChangeScrllBarLabel(object_name,label_name){
-	const object=document.getElementsByName(object_name)[0]
-	const label = document.getElementsByName(label_name)[0]
-	label.innerHTML=object.value
+	const object=document.getElementsByName(object_name)[0];
+	const label = document.getElementsByName(label_name)[0];
+	label.innerHTML=object.value;
 }
 
 function DeletModel(){
@@ -233,13 +237,11 @@ async function StartTrainModel(){
 	//const TRAIN_BATCHES = 300;
 	const TRAIN_BATCHES = parseInt(document.getElementsByName("TrainBachRange")[0].value);
 	const TEST_BATCH_SIZE = 1000;
-	
 	const TEST_ITERATION_FREQUENCY = 10;
 	const TrainData = new MnistData();
 	await TrainData.load();
 	Training_btn.innerHTML="加載中完成";
 	console.log("MNIST資料集讀取完成");
-
 	const lossValueslb =document.getElementsByName("Val_loss")[0];
 	const accuracyValueslb = document.getElementsByName("Val_acc")[0];
 	const trainingbachlb = document.getElementsByName("TraingBach")[0];
