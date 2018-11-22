@@ -8,7 +8,7 @@
 
 ## URL
 
-* www.mlhwr.aoina.com.tw
+* https://aoinacode.github.io/HWRWebSite/
 
 # English
 
@@ -20,4 +20,4 @@
 
 ## URL
 
-* www.mlhwr.aoina.com.tw
+* https://aoinacode.github.io/HWRWebSite/
